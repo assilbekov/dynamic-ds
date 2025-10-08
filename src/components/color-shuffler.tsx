@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Palette, Shuffle } from "lucide-react";
+import { Palette, Shuffle, RotateCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,10 +18,14 @@ import {
   applyColorPalette,
 } from "@/lib/color-generator";
 
+// Default color values from globals.css
+const DEFAULT_PRIMARY_HUE = 285;
+const DEFAULT_SECONDARY_HUE = 285;
+
 export function ColorShuffler() {
   const [mounted, setMounted] = React.useState(false);
-  const [primaryHue, setPrimaryHue] = React.useState(265);
-  const [secondaryHue, setSecondaryHue] = React.useState(85);
+  const [primaryHue, setPrimaryHue] = React.useState(DEFAULT_PRIMARY_HUE);
+  const [secondaryHue, setSecondaryHue] = React.useState(DEFAULT_SECONDARY_HUE);
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -36,6 +40,29 @@ export function ColorShuffler() {
     // This is approximate since we can't easily reverse OKLCH
     setPrimaryHue(Math.floor(Math.random() * 360));
     setSecondaryHue((primaryHue + 180) % 360);
+  };
+
+  const resetToDefault = () => {
+    const root = document.documentElement;
+
+    // Remove all custom color properties to let CSS defaults take over
+    const customProperties = Array.from(root.style).filter(
+      (prop) => prop.startsWith("--primary-") || prop.startsWith("--secondary-")
+    );
+
+    customProperties.forEach((prop) => {
+      root.style.removeProperty(prop);
+    });
+
+    // Reset base colors
+    root.style.removeProperty("--primary");
+    root.style.removeProperty("--primary-foreground");
+    root.style.removeProperty("--secondary");
+    root.style.removeProperty("--secondary-foreground");
+
+    // Reset slider values
+    setPrimaryHue(DEFAULT_PRIMARY_HUE);
+    setSecondaryHue(DEFAULT_SECONDARY_HUE);
   };
 
   const applyCustomColors = (
@@ -125,6 +152,17 @@ export function ColorShuffler() {
         >
           <Shuffle className="mr-2 h-4 w-4" />
           Shuffle Random Colors
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          onClick={(e) => {
+            e.preventDefault();
+            resetToDefault();
+          }}
+          className="cursor-pointer"
+        >
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Reset to Default
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
