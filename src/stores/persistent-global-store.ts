@@ -1,6 +1,14 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+export type ColorPreset = {
+  id: string;
+  name: string;
+  primaryHue: number;
+  secondaryHue: number;
+  createdAt: number;
+};
+
 type GlobalState = {
   // UI State
   sidebarOpen: boolean;
@@ -13,6 +21,9 @@ type GlobalState = {
   // App state
   lastVisitedPage: string;
   bookmarkedItems: string[];
+
+  // Color presets
+  colorPresets: ColorPreset[];
 };
 
 type GlobalActions = {
@@ -33,6 +44,16 @@ type GlobalActions = {
   removeBookmark: (item: string) => void;
   clearBookmarks: () => void;
 
+  // Color preset actions
+  saveColorPreset: (
+    name: string,
+    primaryHue: number,
+    secondaryHue: number
+  ) => void;
+  deleteColorPreset: (id: string) => void;
+  updateColorPresetName: (id: string, name: string) => void;
+  clearAllColorPresets: () => void;
+
   // Reset
   resetPersistentGlobalStore: () => void;
 };
@@ -46,6 +67,7 @@ const initialState: GlobalState = {
   notificationsEnabled: true,
   lastVisitedPage: "/",
   bookmarkedItems: [],
+  colorPresets: [],
 };
 
 export const usePersistentGlobalStore = create<PersistentGlobalStore>()(
@@ -79,6 +101,34 @@ export const usePersistentGlobalStore = create<PersistentGlobalStore>()(
         })),
       clearBookmarks: () => set({ bookmarkedItems: [] }),
 
+      // Color preset actions
+      saveColorPreset: (name, primaryHue, secondaryHue) =>
+        set((state) => ({
+          colorPresets: [
+            ...state.colorPresets,
+            {
+              id: `preset-${Date.now()}-${Math.random()
+                .toString(36)
+                .substr(2, 9)}`,
+              name,
+              primaryHue,
+              secondaryHue,
+              createdAt: Date.now(),
+            },
+          ],
+        })),
+      deleteColorPreset: (id) =>
+        set((state) => ({
+          colorPresets: state.colorPresets.filter((preset) => preset.id !== id),
+        })),
+      updateColorPresetName: (id, name) =>
+        set((state) => ({
+          colorPresets: state.colorPresets.map((preset) =>
+            preset.id === id ? { ...preset, name } : preset
+          ),
+        })),
+      clearAllColorPresets: () => set({ colorPresets: [] }),
+
       // Reset
       resetPersistentGlobalStore: () => set(initialState),
     }),
@@ -92,6 +142,7 @@ export const usePersistentGlobalStore = create<PersistentGlobalStore>()(
         notificationsEnabled: state.notificationsEnabled,
         lastVisitedPage: state.lastVisitedPage,
         bookmarkedItems: state.bookmarkedItems,
+        colorPresets: state.colorPresets,
         // Don't persist sidebarOpen - let it reset on page load
       }),
     }

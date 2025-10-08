@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Palette, Shuffle, RotateCcw } from "lucide-react";
+import { Palette, Shuffle, RotateCcw, Save, Trash2 } from "lucide-react";
+import Cookies from "js-cookie";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,104 +14,92 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
-import {
-  generateRandomColorPalette,
-  applyColorPalette,
-} from "@/lib/color-generator";
+import { Input } from "@/components/ui/input";
+import { applyColorCSSToDOM, DEFAULT_HUES } from "@/lib/color-css-generator";
+import { usePersistentGlobalStoreHook } from "@/hooks/use-persistent-global-store";
 
 // Default color values from globals.css
-const DEFAULT_PRIMARY_HUE = 285;
-const DEFAULT_SECONDARY_HUE = 285;
+const DEFAULT_PRIMARY_HUE = DEFAULT_HUES.primaryHue;
+const DEFAULT_SECONDARY_HUE = DEFAULT_HUES.secondaryHue;
 
 export function ColorShuffler() {
   const [mounted, setMounted] = React.useState(false);
   const [primaryHue, setPrimaryHue] = React.useState(DEFAULT_PRIMARY_HUE);
   const [secondaryHue, setSecondaryHue] = React.useState(DEFAULT_SECONDARY_HUE);
   const [open, setOpen] = React.useState(false);
+  const [presetName, setPresetName] = React.useState("");
+  const [showSaveInput, setShowSaveInput] = React.useState(false);
+
+  const { colorPresets, saveColorPreset, deleteColorPreset } =
+    usePersistentGlobalStoreHook();
 
   React.useEffect(() => {
     setMounted(true);
+
+    // Sync state with cookie on mount
+    const colorHuesCookie = Cookies.get("color-hues");
+    if (colorHuesCookie) {
+      try {
+        const hues = JSON.parse(colorHuesCookie);
+        setPrimaryHue(hues.primaryHue);
+        setSecondaryHue(hues.secondaryHue);
+        // Colors already applied by server, just sync state
+      } catch (error) {
+        console.error("Failed to parse color hues from cookie:", error);
+      }
+    }
   }, []);
 
   const shuffleColors = () => {
-    const palette = generateRandomColorPalette();
-    applyColorPalette(palette);
+    // Generate random hues
+    const newPrimaryHue = Math.floor(Math.random() * 360);
+    const newSecondaryHue = (newPrimaryHue + 180) % 360;
 
-    // Extract hue values from generated colors for the sliders
-    // This is approximate since we can't easily reverse OKLCH
-    setPrimaryHue(Math.floor(Math.random() * 360));
-    setSecondaryHue((primaryHue + 180) % 360);
+    // Update state
+    setPrimaryHue(newPrimaryHue);
+    setSecondaryHue(newSecondaryHue);
+
+    // Apply colors and save to cookie
+    applyCustomColors(newPrimaryHue, newSecondaryHue);
   };
 
   const resetToDefault = () => {
-    const root = document.documentElement;
-
-    // Remove all custom color properties to let CSS defaults take over
-    const customProperties = Array.from(root.style).filter(
-      (prop) => prop.startsWith("--primary-") || prop.startsWith("--secondary-")
-    );
-
-    customProperties.forEach((prop) => {
-      root.style.removeProperty(prop);
-    });
-
-    // Reset base colors
-    root.style.removeProperty("--primary");
-    root.style.removeProperty("--primary-foreground");
-    root.style.removeProperty("--secondary");
-    root.style.removeProperty("--secondary-foreground");
+    // Remove custom color styles
+    const serverStyle = document.getElementById("custom-colors-server");
+    const dynamicStyle = document.getElementById("custom-colors-dynamic");
+    if (serverStyle) serverStyle.remove();
+    if (dynamicStyle) dynamicStyle.remove();
 
     // Reset slider values
     setPrimaryHue(DEFAULT_PRIMARY_HUE);
     setSecondaryHue(DEFAULT_SECONDARY_HUE);
+
+    // Remove cookie
+    Cookies.remove("color-hues");
   };
 
   const applyCustomColors = (
     newPrimaryHue: number,
     newSecondaryHue: number
   ) => {
-    const root = document.documentElement;
+    // Apply colors to DOM immediately
+    applyColorCSSToDOM({
+      primaryHue: newPrimaryHue,
+      secondaryHue: newSecondaryHue,
+    });
 
-    // Generate color scales for custom hues
-    const generateScale = (hue: number, prefix: string) => {
-      const baseChroma = 0.1;
-      const scale = {
-        50: `oklch(0.98 ${(baseChroma * 0.1).toFixed(3)} ${hue})`,
-        100: `oklch(0.95 ${(baseChroma * 0.2).toFixed(3)} ${hue})`,
-        200: `oklch(0.9 ${(baseChroma * 0.4).toFixed(3)} ${hue})`,
-        300: `oklch(0.8 ${(baseChroma * 0.6).toFixed(3)} ${hue})`,
-        400: `oklch(0.7 ${(baseChroma * 0.8).toFixed(3)} ${hue})`,
-        500: `oklch(0.6 ${baseChroma.toFixed(3)} ${hue})`,
-        600: `oklch(0.5 ${(baseChroma * 0.9).toFixed(3)} ${hue})`,
-        700: `oklch(0.4 ${(baseChroma * 0.7).toFixed(3)} ${hue})`,
-        800: `oklch(0.3 ${(baseChroma * 0.5).toFixed(3)} ${hue})`,
-        900: `oklch(0.2 ${(baseChroma * 0.4).toFixed(3)} ${hue})`,
-        950: `oklch(0.15 ${(baseChroma * 0.3).toFixed(3)} ${hue})`,
-      };
-
-      Object.entries(scale).forEach(([key, value]) => {
-        root.style.setProperty(`--${prefix}-${key}`, value);
-      });
-
-      // Also set base colors for sidebar and other components
-      if (prefix === "primary") {
-        root.style.setProperty(`--primary`, `oklch(0.208 0.042 ${hue})`);
-        root.style.setProperty(
-          `--primary-foreground`,
-          `oklch(0.984 0.003 ${hue})`
-        );
+    // Save to cookie for persistence
+    Cookies.set(
+      "color-hues",
+      JSON.stringify({
+        primaryHue: newPrimaryHue,
+        secondaryHue: newSecondaryHue,
+      }),
+      {
+        expires: 365, // 1 year
+        sameSite: "lax",
       }
-      if (prefix === "secondary") {
-        root.style.setProperty(`--secondary`, `oklch(0.968 0.007 ${hue})`);
-        root.style.setProperty(
-          `--secondary-foreground`,
-          `oklch(0.208 0.042 ${hue})`
-        );
-      }
-    };
-
-    generateScale(newPrimaryHue, "primary");
-    generateScale(newSecondaryHue, "secondary");
+    );
   };
 
   const handlePrimaryChange = (value: number) => {
@@ -121,6 +110,28 @@ export function ColorShuffler() {
   const handleSecondaryChange = (value: number) => {
     setSecondaryHue(value);
     applyCustomColors(primaryHue, value);
+  };
+
+  const handleSavePreset = () => {
+    if (!presetName.trim()) return;
+
+    saveColorPreset(presetName.trim(), primaryHue, secondaryHue);
+    setPresetName("");
+    setShowSaveInput(false);
+  };
+
+  const handleApplyPreset = (
+    presetPrimaryHue: number,
+    presetSecondaryHue: number
+  ) => {
+    setPrimaryHue(presetPrimaryHue);
+    setSecondaryHue(presetSecondaryHue);
+    applyCustomColors(presetPrimaryHue, presetSecondaryHue);
+  };
+
+  const handleDeletePreset = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    deleteColorPreset(id);
   };
 
   if (!mounted) {
@@ -164,6 +175,109 @@ export function ColorShuffler() {
           <RotateCcw className="mr-2 h-4 w-4" />
           Reset to Default
         </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        {/* Saved Presets Section */}
+        {colorPresets.length > 0 && (
+          <>
+            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+              Saved Presets
+            </DropdownMenuLabel>
+            <div className="max-h-48 overflow-y-auto">
+              {colorPresets.map((preset) => (
+                <DropdownMenuItem
+                  key={preset.id}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleApplyPreset(preset.primaryHue, preset.secondaryHue);
+                  }}
+                  className="cursor-pointer flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-0.5">
+                      <div
+                        className="h-4 w-4 rounded-sm border"
+                        style={{
+                          backgroundColor: `oklch(0.6 0.15 ${preset.primaryHue})`,
+                        }}
+                      />
+                      <div
+                        className="h-4 w-4 rounded-sm border"
+                        style={{
+                          backgroundColor: `oklch(0.6 0.15 ${preset.secondaryHue})`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm">{preset.name}</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 shrink-0"
+                    onClick={(e) => handleDeletePreset(preset.id, e)}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuItem>
+              ))}
+            </div>
+            <DropdownMenuSeparator />
+          </>
+        )}
+
+        {/* Save Current Colors */}
+        {!showSaveInput ? (
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.preventDefault();
+              setShowSaveInput(true);
+            }}
+            className="cursor-pointer"
+          >
+            <Save className="mr-2 h-4 w-4" />
+            Save Current Colors
+          </DropdownMenuItem>
+        ) : (
+          <div className="p-2 space-y-2">
+            <Input
+              placeholder="Preset name..."
+              value={presetName}
+              onChange={(e) => setPresetName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSavePreset();
+                } else if (e.key === "Escape") {
+                  setShowSaveInput(false);
+                  setPresetName("");
+                }
+              }}
+              autoFocus
+              className="h-8"
+            />
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                onClick={handleSavePreset}
+                disabled={!presetName.trim()}
+                className="flex-1"
+              >
+                Save
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  setShowSaveInput(false);
+                  setPresetName("");
+                }}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
 
         <DropdownMenuSeparator />
         <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
