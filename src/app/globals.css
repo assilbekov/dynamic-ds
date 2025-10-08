@@ -33,6 +33,28 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  --color-primary-950: var(--primary-950);
+  --color-secondary-50: var(--secondary-50);
+  --color-secondary-100: var(--secondary-100);
+  --color-secondary-200: var(--secondary-200);
+  --color-secondary-300: var(--secondary-300);
+  --color-secondary-400: var(--secondary-400);
+  --color-secondary-500: var(--secondary-500);
+  --color-secondary-600: var(--secondary-600);
+  --color-secondary-700: var(--secondary-700);
+  --color-secondary-800: var(--secondary-800);
+  --color-secondary-900: var(--secondary-900);
+  --color-secondary-950: var(--secondary-950);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -53,8 +75,35 @@
   --popover-foreground: oklch(0.129 0.042 264.695);
   --primary: oklch(0.208 0.042 265.755);
   --primary-foreground: oklch(0.984 0.003 247.858);
+
+  /* Primary color scale - Blue/Indigo theme */
+  --primary-50: oklch(0.98 0.008 265);
+  --primary-100: oklch(0.95 0.016 265);
+  --primary-200: oklch(0.9 0.032 265);
+  --primary-300: oklch(0.8 0.048 265);
+  --primary-400: oklch(0.65 0.064 265);
+  --primary-500: oklch(0.5 0.08 265);
+  --primary-600: oklch(0.4 0.072 265);
+  --primary-700: oklch(0.3 0.056 265);
+  --primary-800: oklch(0.2 0.04 265);
+  --primary-900: oklch(0.15 0.032 265);
+  --primary-950: oklch(0.1 0.024 265);
+
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
+
+  /* Secondary color scale - Amber/Yellow theme (complementary to primary) */
+  --secondary-50: oklch(0.98 0.01 85);
+  --secondary-100: oklch(0.95 0.02 85);
+  --secondary-200: oklch(0.9 0.04 85);
+  --secondary-300: oklch(0.8 0.06 85);
+  --secondary-400: oklch(0.7 0.08 85);
+  --secondary-500: oklch(0.6 0.1 85);
+  --secondary-600: oklch(0.5 0.09 85);
+  --secondary-700: oklch(0.4 0.07 85);
+  --secondary-800: oklch(0.3 0.05 85);
+  --secondary-900: oklch(0.2 0.04 85);
+  --secondary-950: oklch(0.15 0.03 85);
   --muted: oklch(0.968 0.007 247.896);
   --muted-foreground: oklch(0.554 0.046 257.417);
   --accent: oklch(0.968 0.007 247.896);
@@ -87,8 +136,35 @@
   --popover-foreground: oklch(0.984 0.003 247.858);
   --primary: oklch(0.929 0.013 255.508);
   --primary-foreground: oklch(0.208 0.042 265.755);
+
+  /* Primary color scale - Dark mode (inverted lightness) */
+  --primary-50: oklch(0.1 0.024 265);
+  --primary-100: oklch(0.15 0.032 265);
+  --primary-200: oklch(0.2 0.04 265);
+  --primary-300: oklch(0.3 0.056 265);
+  --primary-400: oklch(0.4 0.072 265);
+  --primary-500: oklch(0.5 0.08 265);
+  --primary-600: oklch(0.65 0.064 265);
+  --primary-700: oklch(0.8 0.048 265);
+  --primary-800: oklch(0.9 0.032 265);
+  --primary-900: oklch(0.95 0.016 265);
+  --primary-950: oklch(0.98 0.008 265);
+
   --secondary: oklch(0.279 0.041 260.031);
   --secondary-foreground: oklch(0.984 0.003 247.858);
+
+  /* Secondary color scale - Dark mode (inverted lightness) */
+  --secondary-50: oklch(0.15 0.03 85);
+  --secondary-100: oklch(0.2 0.04 85);
+  --secondary-200: oklch(0.3 0.05 85);
+  --secondary-300: oklch(0.4 0.07 85);
+  --secondary-400: oklch(0.5 0.09 85);
+  --secondary-500: oklch(0.6 0.1 85);
+  --secondary-600: oklch(0.7 0.08 85);
+  --secondary-700: oklch(0.8 0.06 85);
+  --secondary-800: oklch(0.9 0.04 85);
+  --secondary-900: oklch(0.95 0.02 85);
+  --secondary-950: oklch(0.98 0.01 85);
   --muted: oklch(0.279 0.041 260.031);
   --muted-foreground: oklch(0.704 0.04 256.788);
   --accent: oklch(0.279 0.041 260.031);
