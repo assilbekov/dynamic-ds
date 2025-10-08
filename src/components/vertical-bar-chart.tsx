@@ -44,12 +44,12 @@ export function VerticalBarChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Monthly Revenue</CardTitle>
+        <CardTitle className="text-base sm:text-lg">Monthly Revenue</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div
-            className="flex items-end justify-between gap-4"
+            className="flex items-end justify-between gap-1.5 sm:gap-3 md:gap-4"
             style={{ height: `${chartHeight}px` }}
           >
             {data.map((item) => (
@@ -59,14 +59,14 @@ export function VerticalBarChart() {
               >
                 {/* Background bar (darker, bigger) */}
                 <div
-                  className="absolute bottom-0 w-full rounded-t-lg bg-gradient-to-t from-primary-600 to-primary-500 transition-all duration-700 ease-out-cubic"
+                  className="absolute bottom-0 w-full rounded-t-md sm:rounded-t-lg bg-gradient-to-t from-primary-600 to-primary-500 transition-all duration-700 ease-out-cubic"
                   style={{
                     height: `${(item.value / maxValue) * chartHeight}px`,
                   }}
                 />
                 {/* Foreground bar (secondary, lighter, smaller, overlapping) */}
                 <div
-                  className="absolute bottom-0 w-full rounded-t-lg bg-gradient-to-t from-secondary-400 to-secondary-300 transition-all duration-700 ease-out-cubic"
+                  className="absolute bottom-0 w-full rounded-t-md sm:rounded-t-lg bg-gradient-to-t from-secondary-400 to-secondary-300 transition-all duration-700 ease-out-cubic"
                   style={{
                     height: `${
                       (item.secondaryValue / maxValue) * chartHeight
@@ -76,19 +76,23 @@ export function VerticalBarChart() {
               </div>
             ))}
           </div>
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-0.5 sm:gap-2 md:gap-4">
             {data.map((item) => (
               <div
                 key={`label-${item.label}`}
-                className="flex flex-1 flex-col items-center text-center"
+                className="flex flex-1 flex-col items-center text-center min-w-0"
               >
-                <div className="text-xs font-medium text-muted-foreground">
+                <div className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate w-full">
                   {item.label}
                 </div>
-                <div className="flex items-center gap-1 text-xs font-bold">
-                  <span className="text-primary-600">${item.value}k</span>
-                  <span className="text-muted-foreground">/</span>
-                  <span className="text-secondary-600">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-0 sm:gap-1 text-[8px] sm:text-xs font-bold w-full min-w-0">
+                  <span className="text-primary-600 truncate">
+                    ${item.value}k
+                  </span>
+                  <span className="hidden sm:inline text-muted-foreground shrink-0">
+                    /
+                  </span>
+                  <span className="text-secondary-600 truncate">
                     ${item.secondaryValue}k
                   </span>
                 </div>

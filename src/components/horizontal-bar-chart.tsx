@@ -39,16 +39,18 @@ export function HorizontalBarChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Sales by Product</CardTitle>
+        <CardTitle className="text-base sm:text-lg">Sales by Product</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4">
         {data.map((item, index) => (
-          <div key={item.label} className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-medium">{item.label}</span>
-              <span className="text-muted-foreground">{item.value}%</span>
+          <div key={item.label} className="space-y-1.5 sm:space-y-2">
+            <div className="flex items-center justify-between text-xs sm:text-sm">
+              <span className="font-medium truncate">{item.label}</span>
+              <span className="text-muted-foreground ml-2 shrink-0">
+                {item.value}%
+              </span>
             </div>
-            <div className="h-3 w-full overflow-hidden rounded-full bg-secondary-100 dark:bg-secondary-900">
+            <div className="h-2.5 sm:h-3 w-full overflow-hidden rounded-full bg-secondary-100 dark:bg-secondary-900">
               <div
                 className={`h-full ${item.color} transition-all duration-700 ease-out-cubic`}
                 style={{
