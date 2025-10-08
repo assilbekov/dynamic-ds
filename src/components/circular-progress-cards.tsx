@@ -16,19 +16,19 @@ const generateRandomProgress = (): ProgressItem[] => {
       title: "Project Completion",
       value: Math.floor(Math.random() * 100),
       target: 100,
-      color: "oklch(0.5 0.08 265)",
+      color: "primary-500",
     },
     {
       title: "Task Progress",
       value: Math.floor(Math.random() * 80) + 20,
       target: 100,
-      color: "oklch(0.6 0.1 85)",
+      color: "secondary-500",
     },
     {
       title: "Team Performance",
       value: Math.floor(Math.random() * 90) + 10,
       target: 100,
-      color: "oklch(0.4 0.072 265)",
+      color: "primary-600",
     },
   ];
 };
@@ -78,7 +78,7 @@ export function CircularProgressCards() {
                     cx="50"
                     cy="50"
                     r="45"
-                    stroke={item.color}
+                    stroke={`var(--${item.color})`}
                     strokeWidth="8"
                     fill="none"
                     strokeDasharray={circumference}
