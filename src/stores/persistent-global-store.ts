@@ -9,6 +9,54 @@ export type ColorPreset = {
   createdAt: number;
 };
 
+/**
+ * Elite premium color presets - Main colors only
+ */
+export const DEFAULT_COLOR_PRESETS: ColorPreset[] = [
+  {
+    id: "default-royal-violet",
+    name: "Royal Violet",
+    primaryHue: 285,
+    secondaryHue: 285,
+    createdAt: Date.now(),
+  },
+  {
+    id: "default-midnight-navy",
+    name: "Midnight Navy",
+    primaryHue: 240,
+    secondaryHue: 235,
+    createdAt: Date.now(),
+  },
+  {
+    id: "default-emerald-jade",
+    name: "Emerald Jade",
+    primaryHue: 155,
+    secondaryHue: 165,
+    createdAt: Date.now(),
+  },
+  {
+    id: "default-ruby-red",
+    name: "Ruby Red",
+    primaryHue: 355,
+    secondaryHue: 0,
+    createdAt: Date.now(),
+  },
+  {
+    id: "default-golden-amber",
+    name: "Golden Amber",
+    primaryHue: 45,
+    secondaryHue: 38,
+    createdAt: Date.now(),
+  },
+  {
+    id: "default-slate-graphite",
+    name: "Slate Graphite",
+    primaryHue: 210,
+    secondaryHue: 210,
+    createdAt: Date.now(),
+  },
+];
+
 type GlobalState = {
   // UI State
   sidebarOpen: boolean;
@@ -67,7 +115,7 @@ const initialState: GlobalState = {
   notificationsEnabled: true,
   lastVisitedPage: "/",
   bookmarkedItems: [],
-  colorPresets: [],
+  colorPresets: DEFAULT_COLOR_PRESETS, // Initialize with premium presets
 };
 
 export const usePersistentGlobalStore = create<PersistentGlobalStore>()(

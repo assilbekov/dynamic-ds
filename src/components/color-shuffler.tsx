@@ -178,11 +178,11 @@ export function ColorShuffler() {
 
         <DropdownMenuSeparator />
 
-        {/* Saved Presets Section */}
+        {/* My Presets Section */}
         {colorPresets.length > 0 && (
           <>
             <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-              Saved Presets
+              My Presets
             </DropdownMenuLabel>
             <div className="max-h-48 overflow-y-auto">
               {colorPresets.map((preset) => (
