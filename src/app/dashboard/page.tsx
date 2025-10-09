@@ -5,7 +5,6 @@ import { SectionCards } from "@/components/section-cards";
 import { SiteHeader } from "@/components/site-header";
 import { HorizontalBarChart } from "@/components/horizontal-bar-chart";
 import { VerticalBarChart } from "@/components/vertical-bar-chart";
-import { AnimatedStatsGrid } from "@/components/animated-stats-grid";
 import { CircularProgressCards } from "@/components/circular-progress-cards";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
@@ -27,11 +26,11 @@ export default function Page() {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              {/* <SectionCards /> */}
+              <SectionCards />
 
-              <div className="px-4 lg:px-6">
+              {/*      <div className="px-4 lg:px-6">
                 <AnimatedStatsGrid />
-              </div>
+              </div> */}
 
               <div className="grid gap-4 px-4 md:grid-cols-2 lg:px-6">
                 <HorizontalBarChart />
