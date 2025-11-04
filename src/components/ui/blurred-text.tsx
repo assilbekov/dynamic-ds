@@ -19,7 +19,7 @@ const BlurredText = React.forwardRef<HTMLSpanElement, BlurredTextProps>(
         <span
           className={cn(
             "transition-all duration-200 ease-out-cubic",
-            isLoading ? "blur-sm select-none opacity-40" : "blur-0 opacity-100"
+            isLoading ? "blur-md select-none opacity-50" : "blur-0 opacity-100"
           )}
           style={{
             willChange: isLoading ? "filter" : "auto",
